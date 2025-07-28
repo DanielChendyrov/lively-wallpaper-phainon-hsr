@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Slide Clock</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <!-- Clock overlay layer -->
+    <div class="clock-container">
+      <div class="column">
+        <div class="num">0</div>
+        <div class="num">1</div>
+        <div class="num">2</div>
+      </div>
+      <div class="column">
+        <div class="num">0</div>
+        <div class="num">1</div>
+        <div class="num">2</div>
+        <div class="num">3</div>
+        <div class="num">4</div>
+        <div class="num">5</div>
+        <div class="num">6</div>
+        <div class="num">7</div>
+        <div class="num">8</div>
+        <div class="num">9</div>
+      </div>
+      <div class="colon"></div>
+      <div class="column">
+        <div class="num">0</div>
+        <div class="num">1</div>
+        <div class="num">2</div>
+        <div class="num">3</div>
+        <div class="num">4</div>
+        <div class="num">5</div>
+      </div>
+      <div class="column">
+        <div class="num">0</div>
+        <div class="num">1</div>
+        <div class="num">2</div>
+        <div class="num">3</div>
+        <div class="num">4</div>
+        <div class="num">5</div>
+        <div class="num">6</div>
+        <div class="num">7</div>
+        <div class="num">8</div>
+        <div class="num">9</div>
+      </div>
+    </div>
+
+    <script>
+      var size = 86;
+      var columns = Array.from(document.getElementsByClassName('column'));
+      var d, c;
+      var classList = ['visible', 'close', 'far', 'far', 'distant', 'distant'];
+      var use24HourClock = true;
+
+      // Video background setup like in working example
+      let htmlVideo = document.createElement('video');
+      htmlVideo.src = 'video-wallpaper.webm';
+      htmlVideo.muted = true;
+      htmlVideo.loop = true;
+      htmlVideo.autoplay = true;
+      htmlVideo.style.position = 'fixed';
+      htmlVideo.style.top = '0';
+      htmlVideo.style.left = '0';
+      htmlVideo.style.width = '100%';
+      htmlVideo.style.height = '100%';
+      htmlVideo.style.objectFit = 'cover';
+      htmlVideo.style.zIndex = '-10';
+      htmlVideo.style.pointerEvents = 'none';
+      
+      // Add video to body
+      document.body.insertBefore(htmlVideo, document.body.firstChild);
+      
+      // Force play
+      htmlVideo.play().catch(function(error) {
+        console.warn('Video autoplay failed:', error);
+      });
+
+      function padClock(p, n) {
+        return p + ('0' + n).slice(-2);
+      }
+
+      function getClock() {
+        d = new Date();
+        return [use24HourClock ? d.getHours() : d.getHours() % 12 || 12, d.getMinutes(), d.getSeconds()].reduce(padClock, '');
+      }
+
+      function getClass(n, i2) {
+        return (
+          classList.find(function (class_, classIndex) {
+            return Math.abs(n - i2) === classIndex;
+          }) || ''
+        );
+      }
+
+      var loop = setInterval(function () {
+        c = getClock();
+
+        columns.forEach(function (ele, i) {
+          var n = +c[i];
+          var offset = -n * size;
+          ele.style.transform = 'translateY(calc(50vh + ' + offset + 'px - ' + size / 2 + 'px))';
+          Array.from(ele.children).forEach(function (ele2, i2) {
+            ele2.className = 'num ' + getClass(n, i2);
+          });
+        });
+      }, 200 + Math.E * 10);
+    </script>
+  </body>
+</html>
