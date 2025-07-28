@@ -1,5 +1,5 @@
 # lively-wallpaper-phainon-hsr
-A live wallpaper with a functioning clock to use with LivelyWallpaper.
+Honkai: Star Rail Phainon live wallpaper.
 
 ## Pre-requisite:
 LivelyWallpaper (Windows): https://www.rocksdanister.com/lively/
@@ -14,7 +14,7 @@ LivelyWallpaper (Windows): https://www.rocksdanister.com/lively/
 6. Add more information as you wish on the next pop up or simply just click "Ok" to save the wallpaper.
   - If the wallpaper doesn't update, restart LivelyWallpaper and choose the wallpaper you save on it's home page.
 
-* I'm not sure if you can delete the folder after setting the wallpaper, but you shouldn't regardless.
+* If someone can find the cycle numbers' font they used in his trailer and animated short and want to help make this wallpaper look better, please fork the repository and modify it as you wish, or you can contact me through my Discord @danielchendyrov so I can update it. Any help is deeply appreciated.
 
 ## Special thanks:
 - My thanks to [@rocksdanister](https://github.com/rocksdanister) for creating this tool.

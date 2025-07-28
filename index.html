@@ -47,6 +47,12 @@
         <div class="num">8</div>
         <div class="num">9</div>
       </div>
+
+      <!-- Date block (two-row, stylized) -->
+      <div class="date-container" aria-label="Date">
+        <div class="date-dow" id="date-dow">MON</div>
+        <div class="date-md" id="date-md">01 FEB</div>
+      </div>
     </div>
 
     <script>
@@ -55,6 +61,8 @@
       var d, c;
       var classList = ['visible', 'close', 'far', 'far', 'distant', 'distant'];
       var use24HourClock = true;
+      var dateDowEl = document.getElementById('date-dow');
+      var dateMdEl = document.getElementById('date-md');
 
       // Video background setup like in working example
       let htmlVideo = document.createElement('video');
@@ -88,6 +96,15 @@
         return [use24HourClock ? d.getHours() : d.getHours() % 12 || 12, d.getMinutes(), d.getSeconds()].reduce(padClock, '');
       }
 
+      function getDateParts() {
+        var now = new Date();
+        // Force consistent English short forms to match the requested MON / FEB style
+        var dow = new Intl.DateTimeFormat('en-US', { weekday: 'short' }).format(now).toUpperCase();
+        var day = new Intl.DateTimeFormat('en-US', { day: '2-digit' }).format(now);
+        var mon = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(now).toUpperCase();
+        return { dow: dow, md: day + ' ' + mon };
+      }
+
       function getClass(n, i2) {
         return (
           classList.find(function (class_, classIndex) {
@@ -98,6 +115,12 @@
 
       var loop = setInterval(function () {
         c = getClock();
+
+        if (dateDowEl && dateMdEl) {
+          var dateParts = getDateParts();
+          dateDowEl.textContent = dateParts.dow;
+          dateMdEl.textContent = dateParts.md;
+        }
 
         columns.forEach(function (ele, i) {
           var n = +c[i];
