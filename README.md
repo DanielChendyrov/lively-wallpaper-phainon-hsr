@@ -1,5 +1,5 @@
 # lively-wallpaper-phainon-hsr
-A live wallpaper with a functioning clock to use with LivelyWallpaper.
+Honkai: Star Rail Phainon live wallpaper.
 
 ## Pre-requisite:
 LivelyWallpaper (Windows): https://www.rocksdanister.com/lively/
