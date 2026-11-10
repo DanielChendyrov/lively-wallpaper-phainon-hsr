@@ -1,157 +1,244 @@
+/* ---------------------------------------------------------------------------
+   The Deliverer's Tragedy — Honkai: Star Rail live wallpaper
+
+   The scene is a clip from Phainon's "Coronal Radiance" trailer: the crimson
+   ruin he threw an asteroid at on the left, the great tree of his home
+   village on the right. The counter stands in the seam between the two.
+--------------------------------------------------------------------------- */
+
 @font-face {
-  font-family: 'Orbitron';
-  src: url('../assets/orbitron/Orbitron%20Light.ttf') format('truetype');
-  font-weight: 300;
+  font-family: 'Cinzel';
+  src: url('../assets/fonts/Cinzel.ttf') format('truetype');
+  font-weight: 400 900;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
-  font-family: 'Orbitron';
-  src: url('../assets/orbitron/Orbitron%20Medium.ttf') format('truetype');
+  font-family: 'Cormorant SC';
+  src: url('../assets/fonts/CormorantSC-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Cormorant SC';
+  src: url('../assets/fonts/CormorantSC-Medium.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
-@font-face {
-  font-family: 'Orbitron';
-  src: url('../assets/orbitron/Orbitron%20Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
+:root {
+  /* The clip is 3440 x 1440. */
+  --aspect: 2.3889;
+  --gold: #f6e7b0;
+  --gold-dim: rgba(246, 231, 176, 0.82);
 }
 
-@font-face {
-  font-family: 'Orbitron';
-  src: url('../assets/orbitron/Orbitron%20Black.ttf') format('truetype');
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
+* {
+  box-sizing: border-box;
 }
 
+html,
 body {
-  text-align: center;
-  background-color: #131415;
-  color: #f4e4a6;
-  font-family: 'Orbitron', 'Roboto Condensed', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  font-weight: 300;
-  overflow: hidden;
   margin: 0;
   padding: 0;
-  width: 100vw;
-  height: 100vh;
-}
-
-/* Video background layer */
-.video-background {
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1;
-  background-color: #131415; /* Fallback background */
   overflow: hidden;
-}
-
-.video-background video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  background-color: #131415;
-}
-
-/* Clock overlay layer */
-.clock-container {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  height: 100vh;
-  text-align: center;
-}
-
-.column,
-.colon {
-  display: inline-block;
-  vertical-align: top;
-  font-size: 86px;
-  line-height: 86px;
-}
-
-/* Two-row vertical date next to the clock */
-.date-container {
-  display: inline-block;
-  vertical-align: top;
-  margin-left: 18px;
-  padding-left: 16px;
-  border-left: 1px solid rgba(244, 228, 166, 0.22);
-  transform: translateY(calc(50vh - 28px));
-  text-align: left;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: rgba(244, 228, 166, 0.92);
-}
-
-.date-dow {
-  font-size: 22px;
-  line-height: 1.1;
-  font-weight: 300;
-  opacity: 0.9;
-}
-
-.date-md {
-  margin-top: 6px;
-  font-size: 24px;
-  line-height: 1.1;
-  font-weight: 500;
-  opacity: 0.95;
-}
-
-.date-dow,
-.date-md {
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 8px rgba(255, 215, 0, 0.35);
-  font-variant-numeric: tabular-nums;
-}
-
-.column {
-  -webkit-transition: -webkit-transform 300ms;
-  transition: -webkit-transform 300ms;
-  transition: transform 300ms;
-  transition: transform 300ms, -webkit-transform 300ms;
-}
-
-.colon {
-  -webkit-transition: -webkit-transform 300ms;
-  transition: -webkit-transform 300ms;
-  transition: transform 300ms;
-  transition: transform 300ms, -webkit-transform 300ms;
-  -webkit-transform: translateY(calc(50vh - 43px));
-  transform: translateY(calc(50vh - 43px));
-}
-.colon:after {
-  content: ':';
-}
-
-.num {
-  -webkit-transition: opacity 500ms, text-shadow 100ms;
-  transition: opacity 500ms, text-shadow 100ms;
-  opacity: 0.025;
-  font-variant-numeric: tabular-nums;
+  background: #12060a;
+  color: var(--gold);
+  font-family: 'Cormorant SC', 'Palatino Linotype', Palatino, Georgia, serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.num.visible {
-  opacity: 1;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 8px rgba(255, 215, 0, 0.6);
+
+/* --------------------------------------------------------------------------
+   Stage — the video's rendered box.
+
+   object-fit: cover means the clip is scaled until it fills the viewport and
+   the overflow is cropped. Sizing .stage the same way and centring it means
+   the stage *is* the picture, overflow included, so percentages inside it
+   always land on the same spot in the artwork.
+-------------------------------------------------------------------------- */
+.stage {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: max(100vw, 100vh * var(--aspect));
+  height: max(100vh, 100vw / var(--aspect));
+  transform: translate(-50%, -50%);
+  overflow: hidden;
 }
-.num.close {
-  opacity: 0.35;
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
 }
-.num.far {
-  opacity: 0.15;
+
+/* --------------------------------------------------------------------------
+   Counter
+-------------------------------------------------------------------------- */
+.counter {
+  position: absolute;
+  left: 50%;
+  top: 11%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: clamp(40px, 8.6vh, 130px);
+  font-weight: 500;
+  text-shadow: 0 0 0.26em rgba(0, 0, 0, 0.85), 0 0 0.05em rgba(0, 0, 0, 0.7);
 }
-.num.distant {
-  opacity: 0.1;
+
+/* A breath of shadow so the type never fights the artwork behind it. */
+.counter::before {
+  content: '';
+  position: absolute;
+  inset: -1.4em -2.2em;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(14, 4, 7, 0.58),
+    rgba(14, 4, 7, 0.28) 48%,
+    rgba(14, 4, 7, 0) 74%
+  );
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* The rule that caps the column, with a lozenge set into it. */
+.counter__head {
+  position: relative;
+  width: 3.6em;
+  height: 1px;
+  margin-bottom: 0.55em;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(246, 231, 176, 0.42) 22%,
+    rgba(246, 231, 176, 0.42) 78%,
+    transparent
+  );
+}
+
+.counter__head .lozenge {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(45deg) scaleY(1.3);
+}
+
+.counter__stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* --------------------------------------------------------------------------
+   Reel — one digit, rolling vertically.
+
+   The strip holds the digits in order; --offset is how many em the strip is
+   pushed up, so the digit at the reading line always sits in the window.
+   Pushing the offset down by one rolls the next digit in; trimming the
+   spent digit off the top and pushing the offset back is invisible.
+-------------------------------------------------------------------------- */
+.reel {
+  position: relative;
+  height: 1.55em;
+  overflow: hidden;
+  /* The fade is measured in em, so the window can be taller than the digit
+     without letting the next one peek in. */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 0.2em,
+    #000 1.05em,
+    transparent 1.28em
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 0.2em,
+    #000 1.05em,
+    transparent 1.28em
+  );
+}
+
+.reel__strip {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  /* --offset counts whole em of travel; 0.18em is the reading line. */
+  transform: translateY(calc((var(--offset, 0) * 1em) + 0.18em));
+  transition: transform 380ms cubic-bezier(0.22, 0.68, 0.24, 1);
+}
+
+.reel__strip.is-instant {
+  transition: none;
+}
+
+.reel__strip li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 1em;
+  line-height: 1;
+  font-variant-numeric: lining-nums;
+}
+
+/* --------------------------------------------------------------------------
+   Lozenge — the trailer's separator, a rhombus with a solid diamond inside.
+   It is the colon of the counter.
+-------------------------------------------------------------------------- */
+.lozenge {
+  position: relative;
+  display: block;
+  width: 0.3em;
+  height: 0.3em;
+  border: 0.05em solid var(--gold);
+  transform: rotate(45deg) scaleY(1.35);
+}
+
+.lozenge::after {
+  content: '';
+  position: absolute;
+  inset: 26%;
+  background: var(--gold);
+}
+
+.counter__stack .lozenge {
+  position: relative;
+  margin: 0.16em 0;
+}
+
+/* --------------------------------------------------------------------------
+   Date
+-------------------------------------------------------------------------- */
+.counter__date {
+  margin: 0.62em 0 0;
+  font-size: 0.25em;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-variant-numeric: lining-nums;
+  color: var(--gold-dim);
+  white-space: nowrap;
+}
+
+.counter__date .dot {
+  display: inline-block;
+  width: 0.22em;
+  height: 0.22em;
+  margin: 0 0.9em;
+  vertical-align: 0.16em;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.7;
 }

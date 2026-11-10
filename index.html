@@ -2,135 +2,41 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Phainon Clock</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Deliverer's Tragedy</title>
     <link rel="stylesheet" href="css/style.css" />
   </head>
 
   <body>
-    <!-- Clock overlay layer -->
-    <div class="clock-container">
-      <div class="column">
-        <div class="num">0</div>
-        <div class="num">1</div>
-        <div class="num">2</div>
-      </div>
-      <div class="column">
-        <div class="num">0</div>
-        <div class="num">1</div>
-        <div class="num">2</div>
-        <div class="num">3</div>
-        <div class="num">4</div>
-        <div class="num">5</div>
-        <div class="num">6</div>
-        <div class="num">7</div>
-        <div class="num">8</div>
-        <div class="num">9</div>
-      </div>
-      <div class="colon"></div>
-      <div class="column">
-        <div class="num">0</div>
-        <div class="num">1</div>
-        <div class="num">2</div>
-        <div class="num">3</div>
-        <div class="num">4</div>
-        <div class="num">5</div>
-      </div>
-      <div class="column">
-        <div class="num">0</div>
-        <div class="num">1</div>
-        <div class="num">2</div>
-        <div class="num">3</div>
-        <div class="num">4</div>
-        <div class="num">5</div>
-        <div class="num">6</div>
-        <div class="num">7</div>
-        <div class="num">8</div>
-        <div class="num">9</div>
-      </div>
+    <!--
+      .stage is sized to the clip's own aspect ratio, so every percentage
+      inside it maps to a percentage of the video frame. That is what keeps
+      the counter sitting in the seam between the two halves of the scene
+      on any display aspect ratio.
+    -->
+    <div class="stage">
+      <video
+        class="backdrop"
+        src="assets/phainon-honkai-star-rail-moewalls-com.mp4"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        aria-hidden="true"
+      ></video>
 
-      <!-- Date block (two-row, stylized) -->
-      <div class="date-container" aria-label="Date">
-        <div class="date-dow" id="date-dow">MON</div>
-        <div class="date-md" id="date-md">01 FEB</div>
+      <div class="counter" id="counter" role="timer" aria-label="Clock">
+        <div class="counter__head" aria-hidden="true">
+          <span class="lozenge"></span>
+        </div>
+
+        <div class="counter__stack" id="stack" aria-hidden="true"></div>
+
+        <p class="counter__date" id="date"></p>
       </div>
     </div>
 
-    <script>
-      var size = 86;
-      var columns = Array.from(document.getElementsByClassName('column'));
-      var d, c;
-      var classList = ['visible', 'close', 'far', 'far', 'distant', 'distant'];
-      var use24HourClock = true;
-      var dateDowEl = document.getElementById('date-dow');
-      var dateMdEl = document.getElementById('date-md');
-
-      // Video background setup like in working example
-      let htmlVideo = document.createElement('video');
-      htmlVideo.src = 'assets/phainon-honkai-star-rail-moewalls-com.mp4';
-      htmlVideo.muted = true;
-      htmlVideo.loop = true;
-      htmlVideo.autoplay = true;
-      htmlVideo.style.position = 'fixed';
-      htmlVideo.style.top = '0';
-      htmlVideo.style.left = '0';
-      htmlVideo.style.width = '100%';
-      htmlVideo.style.height = '100%';
-      htmlVideo.style.objectFit = 'cover';
-      htmlVideo.style.zIndex = '-10';
-      htmlVideo.style.pointerEvents = 'none';
-      
-      // Add video to body
-      document.body.insertBefore(htmlVideo, document.body.firstChild);
-      
-      // Force play
-      htmlVideo.play().catch(function(error) {
-        console.warn('Video autoplay failed:', error);
-      });
-
-      function padClock(p, n) {
-        return p + ('0' + n).slice(-2);
-      }
-
-      function getClock() {
-        d = new Date();
-        return [use24HourClock ? d.getHours() : d.getHours() % 12 || 12, d.getMinutes(), d.getSeconds()].reduce(padClock, '');
-      }
-
-      function getDateParts() {
-        var now = new Date();
-        // Force consistent English short forms to match the requested MON / FEB style
-        var dow = new Intl.DateTimeFormat('en-US', { weekday: 'short' }).format(now).toUpperCase();
-        var day = new Intl.DateTimeFormat('en-US', { day: '2-digit' }).format(now);
-        var mon = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(now).toUpperCase();
-        return { dow: dow, md: day + ' ' + mon };
-      }
-
-      function getClass(n, i2) {
-        return (
-          classList.find(function (class_, classIndex) {
-            return Math.abs(n - i2) === classIndex;
-          }) || ''
-        );
-      }
-
-      var loop = setInterval(function () {
-        c = getClock();
-
-        if (dateDowEl && dateMdEl) {
-          var dateParts = getDateParts();
-          dateDowEl.textContent = dateParts.dow;
-          dateMdEl.textContent = dateParts.md;
-        }
-
-        columns.forEach(function (ele, i) {
-          var n = +c[i];
-          var offset = -n * size;
-          ele.style.transform = 'translateY(calc(50vh + ' + offset + 'px - ' + size / 2 + 'px))';
-          Array.from(ele.children).forEach(function (ele2, i2) {
-            ele2.className = 'num ' + getClass(n, i2);
-          });
-        });
-      }, 200 + Math.E * 10);
-    </script>
+    <script src="js/index.js"></script>
   </body>
 </html>
